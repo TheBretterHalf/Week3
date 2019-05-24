@@ -15,9 +15,11 @@ int main(int argc, char *argv[])
     }
 
     // remember filenames
+    int *increase = argv[0];
     char *infile = argv[1];
     char *outfile = argv[2];
 
+    printf("%i", increase);
     // open input file
     FILE *inptr = fopen(infile, "r");
     if (inptr == NULL)
