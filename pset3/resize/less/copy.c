@@ -8,18 +8,18 @@
 int main(int argc, char *argv[])
 {
     // ensure proper usage
-    if (argc != 3)
+    if (argc != 4)
     {
         fprintf(stderr, "Usage: copy infile outfile\n");
         return 1;
     }
 
     // remember filenames
-    int *increase = argv[0];
-    char *infile = argv[1];
-    char *outfile = argv[2];
+    char *increase = argv[1];
+    char *infile = argv[2];
+    char *outfile = argv[3];
 
-    printf("%i", increase);
+    printf("increment: %s", increase);
     // open input file
     FILE *inptr = fopen(infile, "r");
     if (inptr == NULL)
