@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     char *infile = argv[2];
     char *outfile = argv[3];
 
-    printf("increment: %s", increase);
+    printf("increment: %s\n", increase);
     // open input file
     FILE *inptr = fopen(infile, "r");
     if (inptr == NULL)
