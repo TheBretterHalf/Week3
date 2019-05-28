@@ -59,9 +59,14 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-    printf("BiWidth: %d\n", bi.biWidth);
-    bi.biWidth = bi.biWidth*increase;
-    printf("BiWidth: %d\n", bi.biWidth);
+    //printf("BiWidth: %d\n", bi.biWidth);
+    bi.biWidth *= increase;
+    //printf("BiWidth: %d\n", bi.biWidth);
+    //printf("%d\n", bi.biHeight);
+    bi.biHeight *= increase;
+    bi.biSizeImage *= increase;
+    //printf("BiWidth:%d\nBiHeight:%d\nBiSizeImage:%d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
+
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
