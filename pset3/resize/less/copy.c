@@ -16,6 +16,10 @@ int main(int argc, char *argv[])
 
     // remember filenames
     int increase = atoi(argv[1]);
+    if (increase>100 && increase<0)
+    {
+        return 1;
+    }
     char *infile = argv[2];
     char *outfile = argv[3];
 
