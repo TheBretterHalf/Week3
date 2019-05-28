@@ -16,14 +16,14 @@ int main(int argc, char *argv[])
 
     // remember filenames
     int increase = atoi(argv[1]);
-    if (increase>100 && increase<0)
+    if (increase>100 || increase<0)
     {
         return 1;
     }
     char *infile = argv[2];
     char *outfile = argv[3];
 
-    printf("increment: %i\n", increase);
+    //printf("increment: %i\n", increase);
     // open input file
     FILE *inptr = fopen(infile, "r");
     if (inptr == NULL)
@@ -58,6 +58,10 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Unsupported file format.\n");
         return 4;
     }
+
+    printf("BiWidth: %d\n", bi.biWidth);
+    bi.biWidth = bi.biWidth*increase;
+    printf("BiWidth: %d\n", bi.biWidth);
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
