@@ -64,8 +64,8 @@ int main(int argc, char *argv[])
     //printf("BiWidth: %d\n", bi.biWidth);
     //printf("%d\n", bi.biHeight);
     bi.biHeight *= increase;
-    bi.biSizeImage *= increase;
-    //printf("BiWidth:%d\nBiHeight:%d\nBiSizeImage:%d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
+    bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
+    printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
 
 
     // write outfile's BITMAPFILEHEADER
@@ -90,7 +90,11 @@ int main(int argc, char *argv[])
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
             // write RGB triple to outfile
-            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+            for (int y = 0; y < increase; y++)
+            {
+                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+            }
+
         }
 
         // skip over padding, if any
