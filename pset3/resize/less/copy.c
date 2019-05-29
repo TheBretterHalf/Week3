@@ -60,13 +60,13 @@ int main(int argc, char *argv[])
     }
 
     //printf("BiWidth: %d\n", bi.biWidth);
-    bi.biWidth *= increase;
+    bi.biWidth = increase*bi.biWidth;
     //printf("BiWidth: %d\n", bi.biWidth);
     //printf("%d\n", bi.biHeight);
-    bi.biHeight *= increase;
+    bi.biHeight = increase*bi.biHeight;
     bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
     printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
-
+    RGBTRIPLE newarray[bi.biWidth];
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
@@ -75,13 +75,14 @@ int main(int argc, char *argv[])
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // determine padding for scanlines
-    int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
+    int paddingold = (4 - ((bi.biWidth/increase) * sizeof(RGBTRIPLE)) % 4) % 4;
+    int paddingnew = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // iterate over infile's scanlines
-    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
+    for (int i = 0, biHeight = abs(bi.biHeight/increase); i < biHeight; i++)
     {
         // iterate over pixels in scanline
-        for (int j = 0; j < bi.biWidth; j++)
+        for (int j = 0; j < bi.biWidth/increase; j++)
         {
             // temporary storage
             RGBTRIPLE triple;
@@ -89,19 +90,16 @@ int main(int argc, char *argv[])
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-            // write RGB triple to outfile
-            for (int y = 0; y < increase; y++)
-            {
-                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-            }
-
+            //SCOPE!
+            //RGBTRIPLE newarray[bi.biWidth];
+            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
         }
 
         // skip over padding, if any
-        fseek(inptr, padding, SEEK_CUR);
+        fseek(inptr, paddingnew, SEEK_CUR);
 
         // then add it back (to demonstrate how)
-        for (int k = 0; k < padding; k++)
+        for (int k = 0; k < paddingnew; k++)
         {
             fputc(0x00, outptr);
         }
