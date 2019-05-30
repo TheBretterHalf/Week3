@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
     for (int i = 0, biHeight = abs(bi.biHeight/increase); i < biHeight; i++)
     {
         // iterate over pixels in scanline
+
         for (int j = 0; j < (bi.biWidth/increase); j++)
         {
             // temporary storage
@@ -94,8 +95,8 @@ int main(int argc, char *argv[])
             //fseek(inptr, -(paddingold + (sizeof(RGBTRIPLE) * (bi.biWidth/increase))), SEEK_CUR);
             for(int y=0; y<increase; y++)
             {
-                newarray[i+y]=triple;
-                //printf("%i\t%i\t%i\n", i, j, y);
+                newarray[y + (j * increase)]=triple;
+                printf("%i\n", (y + (j * increase)));
 
                 fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
 
@@ -105,7 +106,7 @@ int main(int argc, char *argv[])
             //SCOPE!
             //RGBTRIPLE newarray[bi.biWidth];
         }
-        //fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+        //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
         fseek(inptr, paddingold, SEEK_CUR);
         // then add it back (to demonstrate how)
