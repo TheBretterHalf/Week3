@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
             {
                 newarray[i][j]=triple;
                 printf("%i\t%i\t%i\n", i, j, y);
+                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
             }
 
             //SCOPE!
