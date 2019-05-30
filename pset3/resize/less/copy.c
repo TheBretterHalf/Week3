@@ -62,10 +62,11 @@ int main(int argc, char *argv[])
     }
 
     //printf("BiWidth: %d\n", bi.biWidth);
-    //printf("BiWidth: %d\n", bi.biWidth);
-    //printf("%d\n", bi.biHeight);
+    // bi.biWidth = increase*bi.biWidth;
+    // bi.biHeight = increase*bi.biHeight;
+    // bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
     //printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
-    RGBTRIPLE newarray[bi.biSizeImage];
+
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
@@ -85,26 +86,29 @@ int main(int argc, char *argv[])
         {
             // temporary storage
             //RGBTRIPLE triple;
-            bi.biWidth = increase*bi.biWidth;
-            bi.biHeight = increase*bi.biHeight;
-            bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
+
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
             //fseek(inptr, paddingold, SEEK_CUR);
-            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+            for()
+
             //SCOPE!
             //RGBTRIPLE newarray[bi.biWidth];
         }
-
-        //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
+        //fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
-        //fseek(inptr, paddingnew, SEEK_CUR);
+        fseek(inptr, paddingnew, SEEK_CUR);
         // then add it back (to demonstrate how)
         for (int k = 0; k < paddingnew; k++)
         {
             fputc(0x00, outptr);
         }
     }
+    //fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+    bi.biWidth = increase*bi.biWidth;
+    bi.biHeight = increase*bi.biHeight;
+    bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
+    RGBTRIPLE newarray[bi.biSizeImage];
 
     // close infile
     fclose(inptr);
