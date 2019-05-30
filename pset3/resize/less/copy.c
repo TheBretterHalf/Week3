@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     bi.biHeight = increase*bi.biHeight;
     bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
     //printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
-    RGBTRIPLE newarray [bi.biWidth][abs(bi.biHeight)];
+    RGBTRIPLE newarray [bi.biWidth];
     //printf("%i\n", newsize);
 
     // write outfile's BITMAPFILEHEADER
@@ -94,10 +94,10 @@ int main(int argc, char *argv[])
             //fseek(inptr, -(paddingold + (sizeof(RGBTRIPLE) * (bi.biWidth/increase))), SEEK_CUR);
             for(int y=0; y<increase; y++)
             {
-                //newarray[i+y][j+y]=triple;
+                newarray[i+y]=triple;
                 //printf("%i\t%i\t%i\n", i, j, y);
 
-                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+                fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
 
                 //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
             }
