@@ -62,11 +62,12 @@ int main(int argc, char *argv[])
     }
 
     //printf("BiWidth: %d\n", bi.biWidth);
-    // bi.biWidth = increase*bi.biWidth;
-    // bi.biHeight = increase*bi.biHeight;
-    // bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
+    bi.biWidth = increase*bi.biWidth;
+    bi.biHeight = increase*bi.biHeight;
+    bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
     //printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
-
+    RGBTRIPLE newarray [bi.biWidth][abs(bi.biHeight)];
+    //printf("%i\n", newsize);
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
@@ -79,10 +80,10 @@ int main(int argc, char *argv[])
     int paddingnew = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // iterate over infile's scanlines
-    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
+    for (int i = 0, biHeight = abs(bi.biHeight/increase); i < biHeight; i++)
     {
         // iterate over pixels in scanline
-        for (int j = 0; j < (bi.biWidth); j++)
+        for (int j = 0; j < (bi.biWidth/increase); j++)
         {
             // temporary storage
             //RGBTRIPLE triple;
@@ -90,25 +91,28 @@ int main(int argc, char *argv[])
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
             //fseek(inptr, paddingold, SEEK_CUR);
-            for()
+            for(int y=0; y<increase; y++)
+            {
+                newarray[i][j]=triple;
+                printf("%i\t%i\t%i\n", i, j, y);
+            }
 
             //SCOPE!
             //RGBTRIPLE newarray[bi.biWidth];
         }
         //fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
-        fseek(inptr, paddingnew, SEEK_CUR);
+        fseek(inptr, paddingold, SEEK_CUR);
         // then add it back (to demonstrate how)
         for (int k = 0; k < paddingnew; k++)
         {
             fputc(0x00, outptr);
         }
     }
-    //fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-    bi.biWidth = increase*bi.biWidth;
-    bi.biHeight = increase*bi.biHeight;
-    bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
-    RGBTRIPLE newarray[bi.biSizeImage];
+    //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
+    // bi.biWidth = increase*bi.biWidth;
+    // bi.biHeight = increase*bi.biHeight;
+    // bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
 
     // close infile
     fclose(inptr);
