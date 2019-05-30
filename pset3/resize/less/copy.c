@@ -92,15 +92,24 @@ int main(int argc, char *argv[])
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
             //fseek(inptr, paddingold, SEEK_CUR);
+
+            //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
+
             //fseek(inptr, -(paddingold + (sizeof(RGBTRIPLE) * (bi.biWidth/increase))), SEEK_CUR);
             for(int y=0; y<increase; y++)
             {
-                newarray[y + (j * increase)]=triple;
-                printf("%i\n", (y + (j * increase)));
+                newarray[(y + (j * increase))]=triple;
+                //printf("%i\t%i\t%i\t%i\n", (y + (j * increase)), y, j, i);
 
-                fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
+                //fwrite(&newarray, sizeof(RGBTRIPLE), bi.biWidth, outptr);
+                //fseek(inptr, -(paddingnew + (sizeof(RGBTRIPLE) * (bi.biWidth))), SEEK_CUR);
 
                 //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
+            }
+            //fseek(inptr, paddingold, SEEK_CUR);
+            for(int z=0; z<increase; z++)
+            {
+                fwrite(&newarray, sizeof(RGBTRIPLE), bi.biWidth, outptr);
             }
 
             //SCOPE!
@@ -109,11 +118,11 @@ int main(int argc, char *argv[])
         //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
         fseek(inptr, paddingold, SEEK_CUR);
-        // then add it back (to demonstrate how)
-        for (int k = 0; k < paddingnew; k++)
-        {
-            fputc(0x00, outptr);
-        }
+        //then add it back (to demonstrate how)
+        // for (int k = 0; k < paddingnew; k++)
+        // {
+        //     fputc(0x00, outptr);
+        // }
     }
     //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
     // bi.biWidth = increase*bi.biWidth;
