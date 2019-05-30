@@ -62,11 +62,8 @@ int main(int argc, char *argv[])
     }
 
     //printf("BiWidth: %d\n", bi.biWidth);
-    bi.biWidth = increase*bi.biWidth;
     //printf("BiWidth: %d\n", bi.biWidth);
     //printf("%d\n", bi.biHeight);
-    bi.biHeight = increase*bi.biHeight;
-    bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
     //printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
     RGBTRIPLE newarray[bi.biSizeImage];
 
@@ -81,14 +78,16 @@ int main(int argc, char *argv[])
     int paddingnew = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // iterate over infile's scanlines
-    for (int i = 0, biHeight = abs(bi.biHeight/increase); i < biHeight; i++)
+    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
     {
         // iterate over pixels in scanline
-        for (int j = 0; j < (bi.biWidth/increase); j++)
+        for (int j = 0; j < (bi.biWidth); j++)
         {
             // temporary storage
             //RGBTRIPLE triple;
-
+            bi.biWidth = increase*bi.biWidth;
+            bi.biHeight = increase*bi.biHeight;
+            bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
             //fseek(inptr, paddingold, SEEK_CUR);
@@ -96,6 +95,7 @@ int main(int argc, char *argv[])
             //SCOPE!
             //RGBTRIPLE newarray[bi.biWidth];
         }
+
         //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
         //fseek(inptr, paddingnew, SEEK_CUR);
