@@ -1,12 +1,14 @@
 // Copies a BMP file
-
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 #include "bmp.h"
 
 int main(int argc, char *argv[])
 {
+    RGBTRIPLE triple;
+
     // ensure proper usage
     if (argc != 4)
     {
@@ -65,8 +67,8 @@ int main(int argc, char *argv[])
     //printf("%d\n", bi.biHeight);
     bi.biHeight = increase*bi.biHeight;
     bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
-    printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
-    RGBTRIPLE newarray[bi.biWidth];
+    //printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
+    RGBTRIPLE newarray[bi.biSizeImage];
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
@@ -82,22 +84,21 @@ int main(int argc, char *argv[])
     for (int i = 0, biHeight = abs(bi.biHeight/increase); i < biHeight; i++)
     {
         // iterate over pixels in scanline
-        for (int j = 0; j < bi.biWidth/increase; j++)
+        for (int j = 0; j < (bi.biWidth/increase); j++)
         {
             // temporary storage
-            RGBTRIPLE triple;
+            //RGBTRIPLE triple;
 
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
-
+            //fseek(inptr, paddingold, SEEK_CUR);
+            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
             //SCOPE!
             //RGBTRIPLE newarray[bi.biWidth];
-            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
         }
-
+        //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
-        fseek(inptr, paddingnew, SEEK_CUR);
-
+        //fseek(inptr, paddingnew, SEEK_CUR);
         // then add it back (to demonstrate how)
         for (int k = 0; k < paddingnew; k++)
         {
@@ -113,4 +114,6 @@ int main(int argc, char *argv[])
 
     // success
     return 0;
+
 }
+
