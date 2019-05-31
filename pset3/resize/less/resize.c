@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     int paddingOld = (4 - (biWidthOld * sizeof(RGBTRIPLE)) % 4) % 4;
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
-    bi.biSizeImage = ((increase * bi.biWidth) + padding) * abs(bi.biHeight);
+    bi.biSizeImage = ((3 * bi.biWidth) + padding) * abs(bi.biHeight);
 
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
@@ -132,19 +132,19 @@ int main(int argc, char *argv[])
             {
                 fputc(0x00, outptr);
             }
-            if (j < increase - 1)
+            if (j < increase -1)
             {
                 fseek(inptr, -(biWidthOld * (int)sizeof(RGBTRIPLE)), SEEK_CUR);
             }
         }
         //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
-        // fseek(inptr, paddingOld, SEEK_CUR);
-        // //then add it back (to demonstrate how)
-        // for (int k = 0; k < padding; k++)
-        // {
-        //     fputc(0x00, outptr);
-        // }
+        fseek(inptr, paddingOld, SEEK_CUR);
+        //then add it back (to demonstrate how)
+        for (int k = 0; k < padding; k++)
+        {
+            fputc(0x00, outptr);
+        }
     }
     //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
     // bi.biWidth = increase*bi.biWidth;
