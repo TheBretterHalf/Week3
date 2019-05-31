@@ -7,8 +7,6 @@
 
 int main(int argc, char *argv[])
 {
-    RGBTRIPLE triple;
-
     // ensure proper usage
     if (argc != 4)
     {
@@ -18,7 +16,7 @@ int main(int argc, char *argv[])
 
     // remember filenames
     int increase = atoi(argv[1]);
-    if (increase>100 || increase<0)
+    if (increase>100 || increase<1)
     {
         return 1;
     }
@@ -60,15 +58,23 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Unsupported file format.\n");
         return 4;
     }
+    //keeping old biwidth
+    LONG biWidthOld = bi.biWidth;
+
+    //new width and height
+    bi.biWidth*=increase;
+    bi.biHeight*=increase;
 
     //printf("BiWidth: %d\n", bi.biWidth);
-    bi.biWidth = increase*bi.biWidth;
-    bi.biHeight = increase*bi.biHeight;
-    bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
+    // bi.biWidth = increase*bi.biWidth;
+    // bi.biHeight = increase*bi.biHeight;
+    // bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
     //printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
-    RGBTRIPLE newarray [bi.biWidth];
+    RGBTRIPLE newarray [bi.biWidth*abs(bi.biHeight)];
     //printf("%i\n", newsize);
 
+
+    //bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
@@ -76,53 +82,61 @@ int main(int argc, char *argv[])
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // determine padding for scanlines
-    int paddingold = (4 - ((bi.biWidth/increase) * sizeof(RGBTRIPLE)) % 4) % 4;
-    int paddingnew = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
+    int paddingOld = (4 - (biWidthOld * sizeof(RGBTRIPLE)) % 4) % 4;
+    int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
+
+    bi.biSizeImage = ((3*bi.biWidth) + padding) * abs(bi.biHeight);
 
     // iterate over infile's scanlines
-    for (int i = 0, biHeight = abs(bi.biHeight/increase); i < biHeight; i++)
+    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
     {
         // iterate over pixels in scanline
 
-        for (int j = 0; j < (bi.biWidth/increase); j++)
+        for (int j = 0; j < increase; j++)
         {
-            // temporary storage
-            //RGBTRIPLE triple;
-
-            // read RGB triple from infile
-            fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
-            //fseek(inptr, paddingold, SEEK_CUR);
-
-            //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
-
-            //fseek(inptr, -(paddingold + (sizeof(RGBTRIPLE) * (bi.biWidth/increase))), SEEK_CUR);
-            for(int y=0; y<increase; y++)
+            for (int h = 0; h < biWidthOld; h++)
             {
-                newarray[(y + (j * increase))]=triple;
-                //printf("%i\t%i\t%i\t%i\n", (y + (j * increase)), y, j, i);
+                // temporary storage
+                RGBTRIPLE triple;
 
+                // read RGB triple from infile
+                fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+                //fseek(inptr, paddingold, SEEK_CUR);
+
+                //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
+                for (int k = 0; k < increase; k++)
+                {
+                    fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+                }
+
+                //fseek(inptr, -(paddingold + (sizeof(RGBTRIPLE) * (bi.biWidth/increase))), SEEK_CUR);
+                //newarray[(j+(i*bi.biWidth))]=triple;
+                //printf("%i\t%i\t%i\n", j, i, (j+(i*bi.biWidth)));
+                //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
                 //fwrite(&newarray, sizeof(RGBTRIPLE), bi.biWidth, outptr);
                 //fseek(inptr, -(paddingnew + (sizeof(RGBTRIPLE) * (bi.biWidth))), SEEK_CUR);
 
                 //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
+                //fseek(inptr, paddingold, SEEK_CUR);
+                //SCOPE!
+                //RGBTRIPLE newarray[bi.biWidth];
             }
-            //fseek(inptr, paddingold, SEEK_CUR);
-            for(int z=0; z<increase; z++)
+            //adding padding
+            for (int g = 0; g < padding; g++)
             {
-                fwrite(&newarray, sizeof(RGBTRIPLE), bi.biWidth, outptr);
+                fputc(0x00, outptr);
             }
-
-            //SCOPE!
-            //RGBTRIPLE newarray[bi.biWidth];
+            if (j < increase - 1)
+                fseek (inptr, -(biWidthOld*(int)sizeof(RGBTRIPLE)), SEEK_CUR);
         }
         //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
-        fseek(inptr, paddingold, SEEK_CUR);
+        fseek(inptr, paddingOld, SEEK_CUR);
         //then add it back (to demonstrate how)
-        // for (int k = 0; k < paddingnew; k++)
-        // {
-        //     fputc(0x00, outptr);
-        // }
+        for (int k = 0; k < padding; k++)
+        {
+             fputc(0x00, outptr);
+        }
     }
     //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
     // bi.biWidth = increase*bi.biWidth;
