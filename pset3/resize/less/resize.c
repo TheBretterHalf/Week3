@@ -70,11 +70,10 @@ int main(int argc, char *argv[])
     // bi.biHeight = increase*bi.biHeight;
     // bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
     //printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
-    RGBTRIPLE newarray [bi.biWidth * abs(bi.biHeight)];
     //printf("%i\n", newsize);
 
 
-    bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+    //bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
@@ -85,7 +84,7 @@ int main(int argc, char *argv[])
     int paddingOld = (4 - (biWidthOld * sizeof(RGBTRIPLE)) % 4) % 4;
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
-    bi.biSizeImage = ((3 * bi.biWidth) + padding) * abs(bi.biHeight);
+    bi.biSizeImage = ((increase * bi.biWidth) + padding) * abs(bi.biHeight);
 
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
@@ -108,6 +107,12 @@ int main(int argc, char *argv[])
                 {
                     fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
                 }
+                // fseek(inptr, paddingOld, SEEK_CUR);
+                // //then add it back (to demonstrate how)
+                // for (int k = 0; k < padding; k++)
+                // {
+                //     fputc(0x00, outptr);
+                // }
 
                 //fseek(inptr, -(paddingold + (sizeof(RGBTRIPLE) * (bi.biWidth/increase))), SEEK_CUR);
                 //newarray[(j+(i*bi.biWidth))]=triple;
@@ -122,6 +127,7 @@ int main(int argc, char *argv[])
                 //RGBTRIPLE newarray[bi.biWidth];
             }
             //adding padding
+
             for (int g = 0; g < padding; g++)
             {
                 fputc(0x00, outptr);
@@ -133,12 +139,12 @@ int main(int argc, char *argv[])
         }
         //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
-        fseek(inptr, paddingOld, SEEK_CUR);
-        //then add it back (to demonstrate how)
-        for (int k = 0; k < padding; k++)
-        {
-            fputc(0x00, outptr);
-        }
+        // fseek(inptr, paddingOld, SEEK_CUR);
+        // //then add it back (to demonstrate how)
+        // for (int k = 0; k < padding; k++)
+        // {
+        //     fputc(0x00, outptr);
+        // }
     }
     //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
     // bi.biWidth = increase*bi.biWidth;
