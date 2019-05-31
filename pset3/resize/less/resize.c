@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     // remember filenames
     int increase = atoi(argv[1]);
-    if (increase>100 || increase<1)
+    if (increase > 100 || increase < 0)
     {
         return 1;
     }
@@ -62,19 +62,19 @@ int main(int argc, char *argv[])
     LONG biWidthOld = bi.biWidth;
 
     //new width and height
-    bi.biWidth*=increase;
-    bi.biHeight*=increase;
+    bi.biWidth *= increase;
+    bi.biHeight *= increase;
 
     //printf("BiWidth: %d\n", bi.biWidth);
     // bi.biWidth = increase*bi.biWidth;
     // bi.biHeight = increase*bi.biHeight;
     // bi.biSizeImage = bi.biWidth*abs(bi.biHeight);
     //printf("BiWidth: %d\nBiHeight: %d\nBiSizeImage: %d\n", bi.biWidth, bi.biHeight, bi.biSizeImage);
-    RGBTRIPLE newarray [bi.biWidth*abs(bi.biHeight)];
+    RGBTRIPLE newarray [bi.biWidth * abs(bi.biHeight)];
     //printf("%i\n", newsize);
 
 
-    //bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+    bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     int paddingOld = (4 - (biWidthOld * sizeof(RGBTRIPLE)) % 4) % 4;
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
-    bi.biSizeImage = ((3*bi.biWidth) + padding) * abs(bi.biHeight);
+    bi.biSizeImage = ((3 * bi.biWidth) + padding) * abs(bi.biHeight);
 
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
@@ -127,7 +127,9 @@ int main(int argc, char *argv[])
                 fputc(0x00, outptr);
             }
             if (j < increase - 1)
-                fseek (inptr, -(biWidthOld*(int)sizeof(RGBTRIPLE)), SEEK_CUR);
+            {
+                fseek(inptr, -(biWidthOld * (int)sizeof(RGBTRIPLE)), SEEK_CUR);
+            }
         }
         //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
@@ -135,7 +137,7 @@ int main(int argc, char *argv[])
         //then add it back (to demonstrate how)
         for (int k = 0; k < padding; k++)
         {
-             fputc(0x00, outptr);
+            fputc(0x00, outptr);
         }
     }
     //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
