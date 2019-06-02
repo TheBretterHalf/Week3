@@ -121,6 +121,7 @@ int main(int argc, char *argv[])
                 //SCOPE!
                 //RGBTRIPLE newarray[bi.biWidth];
             }
+            fseek(inptr, paddingOld, SEEK_CUR);
             //adding padding
             for (int g = 0; g < padding; g++)
             {
@@ -128,12 +129,12 @@ int main(int argc, char *argv[])
             }
             if (j < increase - 1)
             {
-                fseek(inptr, -((biWidthOld-padding) * (int)sizeof(RGBTRIPLE)), SEEK_CUR);
+                fseek(inptr, -(biWidthOld+padding * (int)sizeof(RGBTRIPLE)), SEEK_CUR);
             }
         }
         //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
-        fseek(inptr, paddingOld, SEEK_CUR);
+
         //then add it back (to demonstrate how)
         for (int k = 0; k < padding; k++)
         {
