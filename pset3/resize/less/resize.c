@@ -74,18 +74,19 @@ int main(int argc, char *argv[])
     //printf("%i\n", newsize);
 
 
-    bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+    //
     // write outfile's BITMAPFILEHEADER
-    fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
+
 
     // write outfile's BITMAPINFOHEADER
-    fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // determine padding for scanlines
     int paddingOld = (4 - (biWidthOld * sizeof(RGBTRIPLE)) % 4) % 4;
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
-
     bi.biSizeImage = ((3 * bi.biWidth) + padding) * abs(bi.biHeight);
+    bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+    fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
+    fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
@@ -121,7 +122,6 @@ int main(int argc, char *argv[])
                 //SCOPE!
                 //RGBTRIPLE newarray[bi.biWidth];
             }
-            fseek(inptr, paddingOld, SEEK_CUR);
             //adding padding
             for (int g = 0; g < padding; g++)
             {
@@ -129,18 +129,17 @@ int main(int argc, char *argv[])
             }
             if (j < increase - 1)
             {
-                fseek(inptr, -(biWidthOld+padding * (int)sizeof(RGBTRIPLE)), SEEK_CUR);
+                fseek(inptr, -(biWidthOld * (int)sizeof(RGBTRIPLE)), SEEK_CUR);
             }
         }
         //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
         // skip over padding, if any
-
+        fseek(inptr, paddingOld, SEEK_CUR);
         //then add it back (to demonstrate how)
-        for (int k = 0; k < padding; k++)
-        {
-            fputc(0x00, outptr);
-        }
-
+        // for (int k = 0; k < padding; k++)
+        // {
+        //     fputc(0x00, outptr);
+        // }
     }
     //fwrite(&newarray, sizeof(RGBTRIPLE), 1, outptr);
     // bi.biWidth = increase*bi.biWidth;
@@ -157,4 +156,3 @@ int main(int argc, char *argv[])
     return 0;
 
 }
-
