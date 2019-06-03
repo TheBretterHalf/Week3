@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     }
     //keeping old biwidth
     LONG biWidthOld = bi.biWidth;
-
+    LONG biHeightOld = bi.biHeight;
     //new width and height
     bi.biWidth *= increase;
     bi.biHeight *= increase;
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // iterate over infile's scanlines
-    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
+    for (int i = 0, biHeight = abs(biHeightOld); i < biHeight; i++)
     {
         // iterate over pixels in scanline
 
