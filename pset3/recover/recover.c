@@ -1,15 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef uint8_t BYTE;
+
+//this is our 512 block of bytes stored in a block
+//address + (sizeof(datatype)*index)
+BYTE *buffer = malloc(sizeof(BYTE)*512);
+
 int main(int argc, char *argv[])
 {
-    int x = 0xea;
-    if (0xed < 0xeb)
+    FILE *inptr = fopen(infile, "r");
+    if (inptr == NULL)
     {
-        printf("the statement is true\n")
+        fprintf(stderr, "Could not open %s.\n", infile);
+        return 2;
+    }
+
+    // open output file
+    FILE *outptr = fopen(outfile, "w");
+    if (outptr == NULL)
+    {
+        fclose(inptr);
+        fprintf(stderr, "Could not create %s.\n", outfile);
+        return 3;
+    }
+    //pull bytes and check those bytes
+    //if byte1 ==
+    //if byte2 ==
+    //if byte3 ==
+    int x = 0xea;
+    //this if statement tests your fourth byte in recover.
+    if (x <= 0xef && x >= 0xe0)
+    {
+        printf("the statement is 0xe0 and 0xef\n")
     }
     else
     {
         printf("the statement is false\n")
     }
+    //at end of file fread gives back feof
+    //while fread()!=feof
 }
