@@ -9,21 +9,14 @@ BYTE *buffer = malloc(sizeof(BYTE)*512);
 
 int main(int argc, char *argv[])
 {
+    char *infile = argv[2];
     FILE *inptr = fopen(infile, "r");
     if (inptr == NULL)
     {
         fprintf(stderr, "Could not open %s.\n", infile);
         return 2;
     }
-
-    // open output file
-    FILE *outptr = fopen(outfile, "w");
-    if (outptr == NULL)
-    {
-        fclose(inptr);
-        fprintf(stderr, "Could not create %s.\n", outfile);
-        return 3;
-    }
+    printf("loaded")
     //pull bytes and check those bytes
     //if byte1 ==
     //if byte2 ==
