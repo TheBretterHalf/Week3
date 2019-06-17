@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     bool flag = false;
     while (fread(buffer, 512, 1, inptr) == 1)
     {
-    //beginning of jpg
+        //beginning of jpg
         if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
         {
             //move to next jpg
@@ -63,6 +63,12 @@ int main(int argc, char *argv[])
             fwrite(&buffer, 512, 1, jpgs);
         }
     }
+    //Close all files
+    fclose(inptr);
+    fclose(jpgs);
+
+    //Success
+    return 0;
 
     //pull bytes and check those bytes
     //if byte1 ==
