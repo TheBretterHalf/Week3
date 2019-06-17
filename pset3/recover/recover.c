@@ -37,25 +37,48 @@ int main(int argc, char *argv[])
     //counter for filename
     int counter = 0;
 
-    //beginning of jpg
-    if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
+    //Set Flag to move to next file
+    bool flag = false;
+    while (fread(buffer, 512, 1, file) == 1)
     {
-
+    //beginning of jpg
+        if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
+        {
+            //move to next jpg
+            if (flag == true)
+            {
+                fclose(jpgs);
+            }
+            //if jpg is found
+            else
+            {
+                flag = true;
+            }
+            sprintf(filename, "%03i.jpg", counter)
+            img = fopen(filename, "w");
+            counter++;
+        }
+        if (flag == true)
+        {
+            fwrite(&buffer, 512, 1, img);
+        }
     }
+
     //pull bytes and check those bytes
     //if byte1 ==
     //if byte2 ==
     //if byte3 ==
-    int x = 0xea;
-    //this if statement tests your fourth byte in recover.
-    if (x <= 0xef && x >= 0xe0)
-    {
-        printf("the statement is 0xe0 and 0xef\n");
-    }
-    else
-    {
-        printf("the statement is false\n");
-    }
+    // int x = 0xea;
+    // //this if statement tests your fourth byte in recover.
+    // if (x <= 0xef && x >= 0xe0)
+    // {
+    //     printf("the statement is 0xe0 and 0xef\n");
+    // }
+    // else
+    // {
+    //     printf("the statement is false\n");
+    // }
     //at end of file fread gives back feof
     //while fread()!=feof
+
 }
