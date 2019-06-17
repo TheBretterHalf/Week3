@@ -26,7 +26,22 @@ int main(int argc, char *argv[])
     }
 
     //Output File
-    FILE
+    FILE *jpgs = NULL;
+
+    //Buffer Array to control length of file
+    unsigned char buffer[512];
+
+    //filename array
+    char filename[8];
+
+    //counter for filename
+    int counter = 0;
+
+    //beginning of jpg
+    if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
+    {
+
+    }
     //pull bytes and check those bytes
     //if byte1 ==
     //if byte2 ==
