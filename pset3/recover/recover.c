@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
     //Set Flag to move to next file
     bool flag = false;
-    while (fread(buffer, 512, 1, file) == 1)
+    while (fread(buffer, 512, 1, inptr) == 1)
     {
     //beginning of jpg
         if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
@@ -54,13 +54,13 @@ int main(int argc, char *argv[])
             {
                 flag = true;
             }
-            sprintf(filename, "%03i.jpg", counter)
-            img = fopen(filename, "w");
+            sprintf(filename, "%03i.jpg", counter);
+            jpgs = fopen(filename, "w");
             counter++;
         }
         if (flag == true)
         {
-            fwrite(&buffer, 512, 1, img);
+            fwrite(&buffer, 512, 1, jpgs);
         }
     }
 
