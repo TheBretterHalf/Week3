@@ -86,5 +86,5 @@ int main(int argc, char *argv[])
     // }
     //at end of file fread gives back feof
     //while fread()!=feof
-
+    //adding in
 }
